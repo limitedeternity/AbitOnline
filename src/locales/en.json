@@ -1,0 +1,17 @@
+{
+  "welcome": "Welcome!",
+  "home": "Home",
+  "home_text": "This application will help you apply for education in our university!",
+  "about": "About university",
+  "about_text": "This application is licensed under GNU GPL v3.0 and was developed by @limitedeternity",
+  "pages_drawer": "Pages",
+  "submit_docs": "Submit documents",
+  "remove_docs": "Remove documents",
+  "name": "Full name",
+  "name_empty_error": "Name is required",
+  "name_regex_error": "Name must be valid",
+  "email": "E-mail",
+  "email_empty_error": "E-mail is required",
+  "email_regex_error": "E-mail must be valid",
+  "table": "Ranked list"
+}
