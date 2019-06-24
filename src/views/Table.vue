@@ -57,7 +57,7 @@ export default {
     (function updateTable() {
       this.isLoading = true;
 
-      fetch("/getTable", { method: "GET" })
+      fetch("/getTable?id=docsUUID", { method: "GET" })
         .then(res => res.json())
         .then(json => this.table = json)
         .then(() => setTimeout(updateTable, 20000));

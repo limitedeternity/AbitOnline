@@ -44,7 +44,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async setDocsUploaded({ commit } /*, formData*/) {
+    async uploadDocs({ commit } /*, formData*/) {
       commit("uploadStarted");
       commit("createDocsUUID");
 

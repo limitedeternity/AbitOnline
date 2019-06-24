@@ -102,10 +102,11 @@ export default {
   },
   mounted() {
     // fetch("/getSpecialities", { method: "GET" }).then(res => res.json()).then(json => ...);
-    // JSON с направлениями пихаем в data и рендерим в форме. В sendDocs в fd добавляем id направления.
+    // JSON с направлениями пихаем в data и рендерим в форме в виде выпадающего списка. 
+    // В sendDocs в fd добавляем id направления.
   },
   methods: {
-    ...mapActions(["setDocsUploaded", "resetDocsUpload"]),
+    ...mapActions(["uploadDocs", "resetDocsUpload"]),
     ...mapMutations(["setLocale"]),
     sendDocs() {
       let fd = new FormData();
@@ -122,7 +123,7 @@ export default {
         fd.append("files", filelist[i], filelist[i].name);
       }
 
-      this.setDocsUploaded(fd);
+      this.uploadDocs(fd);
     },
     changeLocale(locale) {
       this.$i18n.locale = locale;

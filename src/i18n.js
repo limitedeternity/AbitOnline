@@ -21,7 +21,9 @@ function loadLocaleMessages() {
 }
 
 export default new VueI18n({
-  locale: JSON.parse(window.localStorage["vuex"]).locale || "en",
+  locale: window.localStorage.getItem("vuex")
+    ? JSON.parse(window.localStorage.getItem("vuex")).locale || "en"
+    : "en",
   fallbackLocale: "en",
   messages: loadLocaleMessages()
 });
