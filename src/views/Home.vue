@@ -31,6 +31,7 @@
             :label="$t('name')"
             required
           ></v-text-field>
+
           <v-text-field
             v-model="email"
             color="teal"
@@ -38,6 +39,15 @@
             :label="$t('email')"
             required
           ></v-text-field>
+
+          <v-select
+            v-model="speciality"
+            color="teal"
+            :items="specialities"
+            :rules="selectRules"
+            :label="$t('spec')"
+            required
+          ></v-select>
 
           <v-flex class="text-xs-center" mt-5>
             <template v-if="!docsUploaded">
@@ -85,6 +95,8 @@ export default {
     ],
     name: "",
     email: "",
+    speciality: "",
+    specialities: [],
     nameRules: [
       v => Boolean(v) || window.vm.$t("name_empty_error"),
       v =>
@@ -95,15 +107,16 @@ export default {
     emailRules: [
       v => Boolean(v) || window.vm.$t("email_empty_error"),
       v => /.+@.+/.test(v) || window.vm.$t("email_regex_error")
-    ]
+    ],
+    selectRules: [v => Boolean(v) || window.vm.$t("spec_empty_error")]
   }),
   computed: {
     ...mapGetters(["docsUploaded", "docsUploadStarted"])
   },
-  mounted() {
-    // fetch("/getSpecialities", { method: "GET" }).then(res => res.json()).then(json => ...);
-    // JSON с направлениями пихаем в data и рендерим в форме в виде выпадающего списка. 
-    // В sendDocs в fd добавляем id направления.
+  created() {
+    fetch("/api/getSpecialities", { method: "GET" })
+      .then(res => res.json())
+      .then(json => (this.specialities = json));
   },
   methods: {
     ...mapActions(["uploadDocs", "resetDocsUpload"]),
@@ -117,7 +130,9 @@ export default {
         "name",
         Array.from(this.name.match(/([А-Яа-я]+)|([A-Za-z]+)/g)).join(" ")
       );
+
       fd.append("email", this.email);
+      fd.append("spec", this.speciality);
 
       for (let i = 0; i < filelist.length; i++) {
         fd.append("files", filelist[i], filelist[i].name);

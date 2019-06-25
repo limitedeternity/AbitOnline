@@ -4,9 +4,21 @@
       <v-flex xs12 sm6 offset-sm3 class="text-xs-center" mt-5>
         <h1 v-text="$t('table')"></h1>
       </v-flex>
+
+      <v-flex xs12 sm6 offset-sm3 mt-3>
+        <v-select
+          v-model="speciality"
+          color="teal"
+          :items="specialities"
+          :label="$t('spec')"
+        ></v-select>
+      </v-flex>
+
       <v-flex xs12 sm6 offset-sm3 mt-5>
         <v-data-table
           :headers="table.headers"
+          :hide-headers="table.headers.length === 0"
+          :hide-actions="table.abiturs.length === 0"
           :items="table.abiturs"
           :loading="isLoading"
           class="elevation-3"
@@ -39,68 +51,46 @@ td {
 export default {
   name: "Table",
   data: () => ({
+    speciality: "",
+    specialities: [],
     table: {
-      headers: [
-        {
-          text: "Абитуриенты",
-          align: "left",
-          sortable: false,
-          value: "name"
-        }
-      ],
+      headers: [],
       abiturs: []
     },
-    isLoading: true
+    isLoading: false,
+    polling: null
   }),
-  mounted() {
-    /*
-    (function updateTable() {
+  watch: {
+    speciality: "updateTable"
+  },
+  created() {
+    fetch("/api/getSpecialities", { method: "GET" })
+      .then(res => res.json())
+      .then(json => (this.specialities = json));
+  },
+  beforeDestroy() {
+    if (this.polling) {
+      clearTimeout(this.polling);
+    }
+  },
+  methods: {
+    updateTable() {
+      if (this.polling) {
+        clearTimeout(this.polling);
+      }
+
       this.isLoading = true;
 
-      fetch("/getTable?id=docsUUID", { method: "GET" })
+      fetch(`/api/getTable?spec=${encodeURIComponent(this.speciality)}`, {
+        method: "GET"
+      })
         .then(res => res.json())
-        .then(json => this.table = json)
-        .then(() => setTimeout(updateTable, 20000));
-    })();
-    */
-
-    new Promise(resolve => setTimeout(resolve, 1200)).then(() => {
-      this.table = {
-        headers: [
-          {
-            text: "Абитуриенты",
-            align: "left",
-            sortable: false,
-            value: "name"
-          },
-          { text: "Русский язык", value: "rus" },
-          { text: "Математика", value: "math" },
-          { text: "Информатика", value: "inf" },
-          { text: "Сумма баллов", value: "sum" },
-          { text: "Оригинал", value: "original" }
-        ],
-        abiturs: [
-          {
-            name: "Аксонов Алексей Викторович",
-            rus: 92,
-            math: 70,
-            inf: 62,
-            sum: 224,
-            original: "+"
-          },
-          {
-            name: "Васнецов Иван Андреевич",
-            rus: 100,
-            math: 60,
-            inf: 72,
-            sum: 232,
-            original: "-"
-          }
-        ]
-      };
-
-      this.isLoading = false;
-    });
+        .then(json => (this.table = json))
+        .then(() => {
+          this.isLoading = false;
+          this.polling = setTimeout(this.updateTable, 20000);
+        });
+    }
   }
 };
 </script>

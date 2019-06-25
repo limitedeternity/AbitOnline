@@ -33,6 +33,7 @@ export default new Vuex.Store({
     },
     resetState(state) {
       state.docsUploaded = false;
+      state.docsUploadStarted = false;
       state.docsUUID = null;
     },
     uploadStarted(state) {
@@ -44,20 +45,23 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async uploadDocs({ commit } /*, formData*/) {
+    uploadDocs({ commit, state }, formData) {
       commit("uploadStarted");
       commit("createDocsUUID");
 
-      // await fetch(`/addDocs?id=${state.docsUUID}`, { method: "POST", body: formData });
-      // На сервере создаются папки "направление/абитуриент-uuid/<здесь загруженные файлы>"
-
-      commit("uploadFinished");
+      fetch(`/api/addDocs/${state.docsUUID}`, {
+        method: "PUT",
+        body: formData
+      }).then(res => {
+        res.ok ? commit("uploadFinished") : commit("resetState");
+      });
     },
-    async resetDocsUpload({ commit }) {
-      // await fetch(`/removeDocs?id=${state.docsUUID}`, { method: "DELETE" });
-      // На сервере удаляются папки, оканчивающиеся на "-uuid"
-
-      commit("resetState");
+    resetDocsUpload({ commit, state }) {
+      fetch(`/api/removeDocs/${state.docsUUID}`, { method: "DELETE" }).then(
+        res => {
+          res.ok ? commit("resetState") : null;
+        }
+      );
     }
   },
   plugins: [createPersistedState()]

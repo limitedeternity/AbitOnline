@@ -13,5 +13,7 @@
   "email": "E-mail",
   "email_empty_error": "E-mail is required",
   "email_regex_error": "E-mail must be valid",
-  "table": "Ranked list"
+  "table": "Ranked list",
+  "spec": "Speciality",
+  "spec_empty_error": "Speciality must be selected"
 }
