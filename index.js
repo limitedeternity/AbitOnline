@@ -21,8 +21,7 @@ const TABLE = {
       { text: "Русский язык", value: "rus" },
       { text: "Математика", value: "math" },
       { text: "Информатика", value: "inf" },
-      { text: "Сумма баллов", value: "sum" },
-      { text: "Оригинал", value: "original" }
+      { text: "Сумма баллов", value: "sum" }
     ],
     abiturs: [
       {
@@ -30,16 +29,14 @@ const TABLE = {
         rus: 92,
         math: 70,
         inf: 62,
-        sum: 224,
-        original: "+"
+        sum: 224
       },
       {
         name: "Васнецов Иван Андреевич",
         rus: 100,
         math: 60,
         inf: 72,
-        sum: 232,
-        original: "-"
+        sum: 232
       }
     ]
   },
@@ -54,8 +51,7 @@ const TABLE = {
       { text: "Русский язык", value: "rus" },
       { text: "Математика", value: "math" },
       { text: "Физика", value: "phys" },
-      { text: "Сумма баллов", value: "sum" },
-      { text: "Оригинал", value: "original" }
+      { text: "Сумма баллов", value: "sum" }
     ],
     abiturs: [
       {
@@ -63,16 +59,14 @@ const TABLE = {
         rus: 70,
         math: 98,
         phys: 90,
-        sum: 258,
-        original: "+"
+        sum: 258
       },
       {
         name: "Клинтски Радко Алексеевич",
         rus: 72,
         math: 86,
         phys: 82,
-        sum: 240,
-        original: "+"
+        sum: 240
       }
     ]
   }
@@ -108,7 +102,20 @@ async function vueServe(req, res) {
 }
 
 function getSpecialities(req, res) {
-  send(res, 200, Object.keys(TABLE));
+  send(
+    res,
+    200,
+    Object.keys(TABLE).sort((a, b) => {
+      let aNum = a.match(/(\d{2})/g).map(Number);
+      let bNum = b.match(/(\d{2})/g).map(Number);
+
+      for (let i = 0; i < aNum.length; i++) {
+        if (aNum[i] != bNum[i]) {
+          return aNum[i] - bNum[i];
+        }
+      }
+    })
+  );
 }
 
 function getTable(req, res) {
